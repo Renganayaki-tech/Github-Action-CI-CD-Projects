@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Employees</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+
+        <h1>Employee Management System</h1>
+
+    </header>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/employees">Employees</a>
+
+    </nav>
+
+    <div class="container">
+
+        <h2>Employee List</h2>
+
+        <table>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Name</th>
+
+                <th>Department</th>
+
+                <th>Action</th>
+
+                <th>Delete</th>
+
+            </tr>
+
+            {% for employee in employees %}
+
+            <tr>
+
+                <td>{{ employee.id }}</td>
+
+                <td>{{ employee.name }}</td>
+
+                <td>{{ employee.department }}</td>
+                <td>
+                    <a href="/edit/{{ employee.id }}">
+                        Edit
+                    </a>
+                </td>
+
+                <td>
+                    <a href="/delete/{{ employee.id }}"
+                        onclick="return confirm('Are you sure you want to delete this employee?')">
+                        Delete
+                    </a>
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>

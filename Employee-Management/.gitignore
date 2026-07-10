@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.vscode/
+# Why?
+
+# These files are local to your machine and shouldn't be committed to GitHub.
