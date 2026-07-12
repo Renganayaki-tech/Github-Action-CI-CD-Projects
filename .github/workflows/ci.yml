@@ -10,10 +10,13 @@ on:
       - main
 
 jobs:
-
   build:
 
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Employee-Management
 
     steps:
 
@@ -23,11 +26,10 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Install Dependencies
         run: |
-          cd Employee-Management
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
@@ -37,11 +39,5 @@ jobs:
       - name: List Project Files
         run: ls -la
 
-      - name: Run Flask Application Check
-        run: |
-          cd Employee-Management
-          python app.py
-
-
-
-# C:\Users\DELL\Desktop\Github_Actions\Employee-Management\.github\workflows\ci.yml
+      - name: Check Flask Application Syntax
+        run: python -m py_compile app.py
