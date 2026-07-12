@@ -39,5 +39,5 @@ jobs:
       - name: List Project Files
         run: ls -la
 
-      - name: Check Flask Application Syntax
-        run: python -m py_compile app.py
+      - name: Run Flask Application
+        run: python app.py
