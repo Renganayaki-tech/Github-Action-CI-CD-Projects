@@ -1,0 +1,62 @@
+name: Create S3 Bucket
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'aws-s3-github/**'
+jobs:
+  create-s3-bucket:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create S3 Bucket
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BUCKET="${{ secrets.S3_BUCKET_NAME }}"
+          REGION="${{ secrets.AWS_REGION }}"
+
+          if [ -z "$BUCKET" ]; then
+            echo "Error: required secret S3_BUCKET_NAME is not set or is empty"
+            exit 1
+          fi
+
+          if [ -z "$REGION" ]; then
+            echo "Error: required secret AWS_REGION is not set or is empty"
+            exit 1
+          fi
+
+          echo "Using bucket: $BUCKET (region: $REGION)"
+          echo "used region"
+
+          # If the bucket already exists and we have access, skip creation
+          if aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
+            echo "Bucket $BUCKET already exists and is accessible."
+            exit 0
+          fi
+
+          # Create the bucket. For us-east-1, do not send LocationConstraint.
+          if [ "$REGION" = "us-east-1" ]; then
+            echo "Creating bucket in us-east-1"
+            aws s3api create-bucket --bucket "$BUCKET"
+          else
+            echo "Creating bucket in $REGION"
+            aws s3api create-bucket --bucket "$BUCKET" --create-bucket-configuration LocationConstraint="$REGION"
+          fi
+
+      - name: List Buckets
+        run: aws s3 ls
